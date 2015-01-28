@@ -14,30 +14,38 @@ import android.util.Log;
 /** A class to parse json data */
 public class JSONParser {
 	
-	public static String mTitle;
-	
-	
-	// Receives a JSONObject and returns a list
-	public List<HashMap<String,Object>> parse(JSONObject jObject){		
+	/**
+	 * Receives a JSONObject and returns a list
+	 * @param jObject
+	 * @return NewsFeedData
+	 */
+	public  NewsFeedData parse(JSONObject jObject){		
 		
 		JSONArray jNewsFeed = null;
+		NewsFeedData newsFeedData=null;
 		try {		
 			// Retrieves all the elements in the news feed data array 
 			
-			mTitle=jObject.get("title").toString();
-
+			newsFeedData=new NewsFeedData();
+			newsFeedData.setTitle(jObject.get("title").toString());
+			// Invoking getNewsData with the array of json object
+			 // where each json object represent a NewsData Object
 			jNewsFeed = jObject.getJSONArray("rows");
-			Log.d("JSON value",jNewsFeed.toString());
+			newsFeedData.setNewsFeedlist(getNewsData(jNewsFeed));
+
 		} catch (JSONException e) {
-			e.printStackTrace();
+			return null;
 		}
 		
-		 // Invoking getNewsData with the array of json object
-		 // where each json object represent a NewsData Object
-		return getNewsData(jNewsFeed);
+		 
+		return newsFeedData;
 	}
 	
-	
+	/**
+	 * Parses each news feed and adds to the List
+	 * @param jNewsFeed
+	 * @return
+	 */
 	private List<HashMap<String, Object>> getNewsData(JSONArray jNewsFeed){
 		
 		Log.d("JSON length",""+jNewsFeed.length());
@@ -46,10 +54,10 @@ public class JSONParser {
 		List<HashMap<String, Object>> newsDataList = new ArrayList<HashMap<String,Object>>();
 		HashMap<String, Object> newsData = null;	
 
-		// Taking each country, parses and adds to list object 
+		// Taking each NewsFeed, parses and adds to list object 
 		for(int i=0; i<newsDataCount;i++){
 			try {
-				// Call getCountry with country JSON object to parse the country 
+				
 				newsData = getNews((JSONObject)jNewsFeed.get(i));
 				
 				newsDataList.add(newsData);
@@ -63,7 +71,11 @@ public class JSONParser {
 		return newsDataList;
 	}
 	
-	// Parsing the News Data JSON object 
+	/**
+	 *  Parsing the News Data JSON object 
+	 * @param jNewsData
+	 * @return HashMap containing the news feed
+	 */
 	private HashMap<String, Object> getNews(JSONObject jNewsData){
 
 		HashMap<String, Object> newsMap = new HashMap<String, Object>();
@@ -79,10 +91,10 @@ public class JSONParser {
 			newsMap.put("title", title);
 			newsMap.put("description", description);
 			newsMap.put("imageHref", imageHref);
-			//country.put("details", details);
+			
 			
 		} catch (JSONException e) {			
-			e.printStackTrace();
+			return null;
 		}	
 		Log.d("JSON object list ",""+newsMap);
 		return newsMap;

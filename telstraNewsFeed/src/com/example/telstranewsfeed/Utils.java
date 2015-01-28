@@ -3,6 +3,9 @@ package com.example.telstranewsfeed;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+/**
+ * This class is helper class to copy input stream data onto output stream
+ */
 public class Utils {
     public static void CopyStream(InputStream is, OutputStream os)
     {

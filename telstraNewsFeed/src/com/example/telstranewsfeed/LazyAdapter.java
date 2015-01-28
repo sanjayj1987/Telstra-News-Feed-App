@@ -5,8 +5,6 @@ package com.example.telstranewsfeed;
 import java.util.HashMap;
 import java.util.List;
 
-import com.example.newsfeed.R;
-
 
 
 import android.app.Activity;
@@ -17,20 +15,39 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+/**
+ * Class for custom adapter for the list view to load images lazily
+ */
 public class LazyAdapter extends BaseAdapter {
-
+	
+	/** The Activity of the application */
 	private Activity activity;
+	
+	/** List with the NewsFeed data */
 	private List<HashMap<String, Object>> data;
+	
+	/** LayoutInflater to inflate news view list*/
 	private static LayoutInflater inflater=null;
+	
+	/**  ImageLoader object to store the images in cache**/
 	public ImageLoader imageLoader; 
 
-	public LazyAdapter(Activity a, List<HashMap<String, Object>> d) {
+	/**
+	 * LazyAdapter constructor
+	 * @param a Activity
+	 * @param d NewsFeed Data
+	 */
+	public LazyAdapter(Activity a, NewsFeedData d) {
 		activity = a;
-		data=d;
+		data=d.getNewsFeedlist();
+		activity.setTitle(d.getTitle());
 		inflater = (LayoutInflater)activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		imageLoader=new ImageLoader(activity.getApplicationContext());
 	}
-
+	
+	/**
+	 * return the count of list items
+	 */
 	public int getCount() {
 		return data.size();
 	}
@@ -43,11 +60,16 @@ public class LazyAdapter extends BaseAdapter {
 		return position;
 	}
 
-	
+	/**
+	 * Implementation of the getView method of custom adapter
+	 * @param position
+	 * @param convertView
+	 * @param parent
+	 */
 	public View getView(int position, View convertView, ViewGroup parent) {
 		View vi=convertView;
 		if(convertView==null)
-			vi = inflater.inflate(R.layout.list_row, null);
+			vi = inflater.inflate(R.layout.list_item, null);
 
 		TextView title = (TextView)vi.findViewById(R.id.title); // title
 		TextView description = (TextView)vi.findViewById(R.id.description); // description 
